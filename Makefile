@@ -1,6 +1,6 @@
 CC = gcc
 LDFLAGS = -lwiringPi
-CFLAGS = -c -Wall -I$(INC_DIR) -pedantic
+CFLAGS = -c -Wall -I $(INC_DIR) -pedantic
 
 BUILD_DIR = .
 INC_DIR = $(BUILD_DIR)/include
