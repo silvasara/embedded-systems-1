@@ -22,16 +22,19 @@ void open_uart(){
     tcsetattr(uart0_filestream, TCSANOW, &options);
 }
 
-float get_intern_temperature(char code){
+float get_temperature(char code){
     int status = write_on_uart(code);
-    if (status < 0)
+    if (status < 0){
         return status;
+	}
+    
+	sleep(1);
 
-    return get_temperature();
+    return read_from_uart();
 }
 
-float get_temperature(){
-    int temperature = -1;
+float read_from_uart(){
+    float temperature = -1;
 
     if (uart0_filestream != -1){
         // Read up to 255 characters from the port if they are there
@@ -45,25 +48,18 @@ float get_temperature(){
         }
         else{
 		    memcpy(&temperature, &rx_buffer[3], 4);
-            printf("TI = %d\n", temperature);
-
-            //Bytes received
-            rx_buffer[rx_length] = '\0';
-            printf("%i Bytes lidos : %s\n", rx_length, rx_buffer);
         }
     }
 
-   close(uart0_filestream);
    return temperature;
 
 }
 
 int write_on_uart(char code){
-    unsigned char tx_buffer[20] = {0x01, 0x23, code, 0x04, 0x07, 0x05, 0x02};
+    unsigned char tx_buffer[9] = {0x01, 0x23, code, 0x04, 0x07, 0x05, 0x02};
 
-	int crc = calcula_CRC(tx_buffer, 7);
+	short crc = calcula_CRC(tx_buffer, 7);
     memcpy(&tx_buffer[7], &crc, 2);
-
     if (uart0_filestream != -1){
         printf("Escrevendo caracteres na UART ...");
         int count = write(uart0_filestream, &tx_buffer[0], 7+2);
@@ -71,9 +67,11 @@ int write_on_uart(char code){
             printf("UART TX error\n");
 			return count;
 		}
-		printf("escrito.\n");
-		return 0;
     }
+	printf("escrito.\n");
+	return 0;
+}
 
-    sleep(1);
+void close_uart(){
+   close(uart0_filestream);
 }

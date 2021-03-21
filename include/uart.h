@@ -2,12 +2,14 @@
 #include <unistd.h>         //Used for UART
 #include <fcntl.h>          //Used for UART
 #include <termios.h>        //Used for UART
+#include <string.h>
+#include <crc16.h>
 
-#define INTERN_TEMPERATURE  0xC1
-#define POTENTIOMETER_TEMPERATURE  0xC2
+#define INTERN_TEMPERATURE 0xC1
+#define POTENTIOMETER_TEMPERATURE 0xC2
 
 void open_uart();
-float get_intern_temperature(char code);
-int get_potentiometer_value();
+float get_temperature(char code);
 int write_on_uart(char code);
-float get_temperature();
+float read_from_uart();
+void close_uart();
