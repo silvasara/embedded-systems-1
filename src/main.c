@@ -1,43 +1,63 @@
 #include <stdio.h>
+#include <signal.h>
+#include <stdlib.h>
+
 #include "uart.h"
 #include "i2c.h"
 #include "lcd.h"
 #include "pid.h"
 #include "pwm.h"
 
+void close_connections();
+
+volatile int do_continue = 1;
+
 int main(){
+	signal(SIGINT, close_connections);
+
     open_uart();
 	init_i2c();
 	lcd_init();
+	enable_gpio();
 
-	float internal_temperature = -1;
-	float potentiometer = -1;
-	float external_temperature = -1;
+	float internal_temperature;
+	float potentiometer;
+	float external_temperature;
 
-	internal_temperature = get_temperature(INTERNAL_TEMPERATURE);
-	printf("TI = %f\n", internal_temperature);
-	
-	potentiometer = get_temperature(POTENTIOMETER_TEMPERATURE);
-	printf("TR = %f\n", potentiometer);
-   
-	external_temperature = get_external_temperature();
-	printf("TE = %f\n", external_temperature);
-	print_on_lcd(internal_temperature, external_temperature, potentiometer);
+	while(do_continue){
+		internal_temperature = get_temperature(INTERNAL_TEMPERATURE);
+		printf("TI = %f\n", internal_temperature);
+		
+		potentiometer = get_temperature(POTENTIOMETER_TEMPERATURE);
+		printf("TR = %f\n", potentiometer);
+	   
+		external_temperature = get_external_temperature();
+		printf("TE = %f\n", external_temperature);
+		print_on_lcd(internal_temperature, external_temperature, potentiometer);
 
-	close_uart();
 
-	float reference_temperature = potentiometer;
+		float reference_temperature = potentiometer;
 
-	double kp = 5.0, ki = 1.0, kd = 5.0;
-  	pid_configura_constantes(kp, ki, kd);
-    pid_atualiza_referencia(reference_temperature);
+		double kp = 5.0, ki = 1.0, kd = 5.0;
+		pid_configura_constantes(kp, ki, kd);
+		pid_atualiza_referencia(reference_temperature);
 
-	double control = pid_controle(internal_temperature);
-    printf("PID: %f\n", control);
+		double control = pid_controle(internal_temperature);
+		printf("PID: %f\n", control);
 
-	control_temperature(control);
+		control_temperature(control);
+		sleep(1);
+	}
 
+    printf("Finalizando...\n");
+	sleep(1);
+	printf("Finalizado!");
 
 	return 0;
 }
 
+void close_connections(){
+	close_uart();
+	disable_gpio();
+	do_continue = 0;
+}

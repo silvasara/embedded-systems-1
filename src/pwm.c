@@ -1,6 +1,7 @@
 #include <pwm.h>
+#include <stdio.h>
 
-void setup_gpio(){
+void enable_gpio(){
 	wiringPiSetup();		   
 	pinMode(RESISTOR_PIN, OUTPUT);
 	pinMode(FAN_PIN, OUTPUT);
@@ -25,7 +26,9 @@ void control_temperature(int value){
 
 void disable_gpio(){
     softPwmWrite(RESISTOR_PIN, 0);
+	sleep(1);
     softPwmWrite(FAN_PIN, 0);
-    printf("Fan and resistor off\n");
+	sleep(1);
+    printf("Ventoinha e resistor desligados\n");
 }
 
