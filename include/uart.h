@@ -5,7 +5,7 @@
 #include <string.h>
 #include <crc16.h>
 
-#define INTERN_TEMPERATURE 0xC1
+#define INTERNAL_TEMPERATURE 0xC1
 #define POTENTIOMETER_TEMPERATURE 0xC2
 
 void open_uart();
