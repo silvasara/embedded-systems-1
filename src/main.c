@@ -2,6 +2,8 @@
 #include "uart.h"
 #include "i2c.h"
 #include "lcd.h"
+#include "pid.h"
+#include "pwm.h"
 
 int main(){
     open_uart();
@@ -24,5 +26,18 @@ int main(){
 
 	close_uart();
 
+	float reference_temperature = potentiometer;
+
+	double kp = 5.0, ki = 1.0, kd = 5.0;
+  	pid_configura_constantes(kp, ki, kd);
+    pid_atualiza_referencia(reference_temperature);
+
+	double control = pid_controle(internal_temperature);
+    printf("PID: %f\n", control);
+
+	control_temperature(control);
+
+
 	return 0;
 }
+
