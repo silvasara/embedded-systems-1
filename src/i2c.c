@@ -7,8 +7,6 @@ void init_i2c(){
 float get_external_temperature(){
     int tempreature, pressure, humidity;
 	
-	init_i2c();
-
     bme280ReadValues(&tempreature, &pressure, &humidity);
 
     return tempreature/100.0;
