@@ -14,8 +14,9 @@ void close_connections();
 volatile int do_continue = 1;
 
 int main(){
-	signal(SIGINT, close_connections);
-
+	signal(SIGINT, close_connections); // close connections with Ctrl+c
+	
+	// initializes connections
     open_uart();
 	init_i2c();
 	lcd_init();
@@ -25,11 +26,12 @@ int main(){
 	float potentiometer;
 	float external_temperature;
 	
-	write_columns();
+	write_columns(); // start writing log in csv
 
-    int write_log = 0;
+    int write_log = 0; // flag for write in csv
 
 	while(do_continue){
+		// get temperatures 
 		internal_temperature = get_temperature(INTERNAL_TEMPERATURE);
 		printf("TI = %f\n", internal_temperature);
 		
@@ -38,12 +40,13 @@ int main(){
 	   
 		external_temperature = get_external_temperature();
 		printf("TE = %f\n", external_temperature);
-		print_on_lcd(internal_temperature, external_temperature, potentiometer);
 
+		print_on_lcd(internal_temperature, external_temperature, potentiometer); //
 
 		float reference_temperature = potentiometer;
-
-		double kp = 5.0, ki = 1.0, kd = 5.0;
+		
+		// make control of temperature with pid
+		double kp = 5.0, ki = 1.0, kd = 5.0; 
 		pid_configura_constantes(kp, ki, kd);
 		pid_atualiza_referencia(reference_temperature);
 
@@ -56,7 +59,7 @@ int main(){
         	write_log = 1;
 		}
         else{
-			write_values(internal_temperature, external_temperature, reference_temperature, control);
+			write_values(internal_temperature, external_temperature, reference_temperature, control); // write in csv
         	write_log = 0;
         }
 

@@ -64,11 +64,11 @@ int write_on_uart(char code){
         printf("Escrevendo caracteres na UART ...");
         int count = write(uart0_filestream, &tx_buffer[0], 7+2);
         if (count < 0){
-            printf("UART TX error\n");
+			printf("UART TX error\n");
 			return count;
 		}
     }
-	printf("escrito.\n");
+	printf("Escrito!\n");
 	return 0;
 }
 
