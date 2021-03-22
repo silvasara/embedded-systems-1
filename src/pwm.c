@@ -10,7 +10,7 @@ void enable_gpio(){
 	softPwmCreate(FAN_PIN, 1, 100);
 }
 
-void control_temperature(int value){
+void control_temperature(double value){
     if (value > 0){
         softPwmWrite(RESISTOR_PIN, value);
         softPwmWrite(FAN_PIN, 0);
@@ -26,9 +26,7 @@ void control_temperature(int value){
 
 void disable_gpio(){
     softPwmWrite(RESISTOR_PIN, 0);
-	sleep(1);
     softPwmWrite(FAN_PIN, 0);
-	sleep(1);
-    printf("Ventoinha e resistor desligados\n");
+    printf("Ventoinha e resistor desligados.\n");
 }
 

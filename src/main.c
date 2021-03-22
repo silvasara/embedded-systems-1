@@ -7,6 +7,7 @@
 #include "lcd.h"
 #include "pid.h"
 #include "pwm.h"
+#include "csv.h"
 
 void close_connections();
 
@@ -23,6 +24,10 @@ int main(){
 	float internal_temperature;
 	float potentiometer;
 	float external_temperature;
+	
+	write_columns();
+
+    int write_log = 0;
 
 	while(do_continue){
 		internal_temperature = get_temperature(INTERNAL_TEMPERATURE);
@@ -46,6 +51,15 @@ int main(){
 		printf("PID: %f\n", control);
 
 		control_temperature(control);
+
+		if (write_log == 0){
+        	write_log = 1;
+		}
+        else{
+			write_values(internal_temperature, external_temperature, reference_temperature, control);
+        	write_log = 0;
+        }
+
 		sleep(1);
 	}
 
@@ -59,5 +73,6 @@ int main(){
 void close_connections(){
 	close_uart();
 	disable_gpio();
+	sleep(1);
 	do_continue = 0;
 }

@@ -5,5 +5,5 @@
 #define FAN_PIN 5
 
 void enable_gpio();
-void control_temperature(int value);
+void control_temperature(double value);
 void disable_gpio();
