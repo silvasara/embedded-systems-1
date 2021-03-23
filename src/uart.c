@@ -26,9 +26,9 @@ float get_temperature(char code){
     int status = write_on_uart(code);
     if (status < 0){
         return status;
-	}
-    
-	sleep(1);
+    }
+
+    sleep(1);
 
     return read_from_uart();
 }
@@ -47,31 +47,31 @@ float read_from_uart(){
             printf("Nenhum dado disponível.\n"); //No data waiting
         }
         else{
-		    memcpy(&temperature, &rx_buffer[3], 4);
+            memcpy(&temperature, &rx_buffer[3], 4);
         }
     }
 
-   return temperature;
+    return temperature;
 
 }
 
 int write_on_uart(char code){
     unsigned char tx_buffer[9] = {0x01, 0x23, code, 0x04, 0x07, 0x05, 0x02};
 
-	short crc = calcula_CRC(tx_buffer, 7);
+    short crc = calcula_CRC(tx_buffer, 7);
     memcpy(&tx_buffer[7], &crc, 2);
     if (uart0_filestream != -1){
         printf("Escrevendo caracteres na UART ...");
         int count = write(uart0_filestream, &tx_buffer[0], 7+2);
         if (count < 0){
-			printf("UART TX error\n");
-			return count;
-		}
+            printf("UART TX error\n");
+            return count;
+        }
     }
-	printf("Escrito!\n");
-	return 0;
+    printf("Escrito!\n");
+    return 0;
 }
 
 void close_uart(){
-   close(uart0_filestream);
+    close(uart0_filestream);
 }

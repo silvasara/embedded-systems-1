@@ -1,3 +1,7 @@
+/* 
+*  Author: Renato Coral Sampaio
+*/
+
 #include "pid.h"
 #include <stdio.h>
 
