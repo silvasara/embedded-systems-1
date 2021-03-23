@@ -6,7 +6,7 @@ Project 1 of the Fundamentals of Embedded Systems discipline, which consists of 
 
 ### External dependencies
 
-There is a dependency that has not cloned with this repository:
+There is a dependency that was not cloned with this repository:
 * [Wiring Pi](http://wiringpi.com/download-and-install/)
 
 ### Compiling
